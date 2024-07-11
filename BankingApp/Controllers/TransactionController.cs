@@ -13,17 +13,19 @@ namespace BankingApp.Controllers
     {
 
 
-        private readonly ITransactionServi _transactionService;
+        private readonly ITransactionService _transactionService;
 
-        public TransactionController(ITransactionServi transactionService)
+        public TransactionController(ITransactionService transactionService)
         {
             _transactionService = transactionService;
         }
-        [HttpPost("Login")]
-        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+
+
+        [HttpPost("Withdraw")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<string>> Login(WithdrawDTO dto)
+        public async Task<ActionResult<string>> WithdrawMoney(WithdrawDTO dto)
         {
             try
             {
@@ -48,8 +50,64 @@ namespace BankingApp.Controllers
 
         }
 
+        [HttpPost("Deposit")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<string>> DepositMoney(DepositDTO depositDto)
+        {
+            try
+            {
+                var result = await _transactionService.Deposit(depositDto);
+                return Ok(result);
+            }
+            catch (InvalidCardException e)
+            {
+                return NotFound(new ErrorModel(400, e.Message));
+            }
+            catch(UnauthorizedUserException e)
+            {
+                return Unauthorized(new ErrorModel(401, e.Message));
+            }
+            catch(LimitExceededException e)
+            {
+                return NotFound(new ErrorModel(404, e.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
+
+        }
 
 
+        [HttpPost("Transactions")]
+        [ProducesResponseType(typeof(List<TransactionReturnDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<TransactionReturnDTO>>> GetAllTransactions(CardReaderDTO cardReadDto)
+        {
+            try
+            {
+                var result = await _transactionService.GetAllTransactions(cardReadDto);
+                return Ok(result);
+            }
+            catch (InvalidCardException e)
+            {
+                return NotFound(new ErrorModel(400, e.Message));
+            }
+            catch (UnauthorizedUserException e)
+            {
+                return Unauthorized(new ErrorModel(401, e.Message));
+            }
+            catch (EmptyListException e)
+            {
+                return NotFound(new ErrorModel(400, e.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
+
+        }
 
     }
 }

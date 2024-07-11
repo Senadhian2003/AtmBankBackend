@@ -11,7 +11,7 @@ namespace BankingApp.Models
 
         public string BankName { get; set; }
 
-        public int AccountId { get; set; }
+        public long AccountId { get; set; }
         [ForeignKey(nameof(AccountId))]
         public Account Account { get; set; }
 

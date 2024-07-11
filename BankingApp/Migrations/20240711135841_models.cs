@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BankingApp.Migrations
 {
-    public partial class init : Migration
+    public partial class models : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,7 @@ namespace BankingApp.Migrations
                 name: "Accounts",
                 columns: table => new
                 {
-                    AccountId = table.Column<int>(type: "int", nullable: false)
+                    AccountId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     DateOfCreation = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -67,7 +67,7 @@ namespace BankingApp.Migrations
                     CardNumber = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BankName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<long>(type: "bigint", nullable: false),
                     PIN = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Expiry = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -89,7 +89,8 @@ namespace BankingApp.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CardNumber = table.Column<long>(type: "bigint", nullable: false),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    AtmId = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<long>(type: "bigint", nullable: false),
                     TransactionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TransactionAmount = table.Column<double>(type: "float", nullable: false),
                     TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -102,6 +103,11 @@ namespace BankingApp.Migrations
                         column: x => x.AccountId,
                         principalTable: "Accounts",
                         principalColumn: "AccountId");
+                    table.ForeignKey(
+                        name: "FK_Transactions_Atms_AtmId",
+                        column: x => x.AtmId,
+                        principalTable: "Atms",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Transactions_Cards_CardNumber",
                         column: x => x.CardNumber,
@@ -133,38 +139,38 @@ namespace BankingApp.Migrations
                 columns: new[] { "AccountId", "CurrentAmount", "DateOfCreation", "Type", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 5000.0, new DateTime(2024, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5908), "Savings", 1 },
-                    { 2, 25000.0, new DateTime(2024, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5912), "Current", 1 },
-                    { 3, 3000.0, new DateTime(2024, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5913), "Savings", 2 },
-                    { 4, 8000.0, new DateTime(2024, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5914), "Current", 3 }
+                    { 1L, 5000.0, new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5456), "Savings", 1 },
+                    { 2L, 25000.0, new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5459), "Current", 1 },
+                    { 3L, 3000.0, new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5459), "Savings", 2 },
+                    { 4L, 8000.0, new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5460), "Current", 3 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Cards",
                 columns: new[] { "CardNumber", "AccountId", "BankName", "Expiry", "PIN" },
-                values: new object[] { 1234567890123456L, 1, "A Bank", new DateTime(2027, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5926), "1234" });
+                values: new object[] { 1234567890123456L, 1L, "A Bank", new DateTime(2027, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5470), "1234" });
 
             migrationBuilder.InsertData(
                 table: "Cards",
                 columns: new[] { "CardNumber", "AccountId", "BankName", "Expiry", "PIN" },
-                values: new object[] { 2345678901234567L, 2, "B Bank", new DateTime(2026, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5934), "5678" });
+                values: new object[] { 2345678901234567L, 2L, "B Bank", new DateTime(2026, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5475), "5678" });
 
             migrationBuilder.InsertData(
                 table: "Cards",
                 columns: new[] { "CardNumber", "AccountId", "BankName", "Expiry", "PIN" },
-                values: new object[] { 3456789012345678L, 3, "A Bank", new DateTime(2027, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5935), "9876" });
+                values: new object[] { 3456789012345678L, 3L, "A Bank", new DateTime(2027, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5476), "9876" });
 
             migrationBuilder.InsertData(
                 table: "Transactions",
-                columns: new[] { "Id", "AccountId", "CardNumber", "TransactionAmount", "TransactionDate", "TransactionType" },
+                columns: new[] { "Id", "AccountId", "AtmId", "CardNumber", "TransactionAmount", "TransactionDate", "TransactionType" },
                 values: new object[,]
                 {
-                    { 1, 1, 1234567890123456L, 50.0, new DateTime(2024, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5957), "Withdrawal" },
-                    { 2, 1, 2345678901234567L, 100.0, new DateTime(2024, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5958), "Deposit" },
-                    { 3, 2, 3456789012345678L, 20.0, new DateTime(2024, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5959), "Withdrawal" },
-                    { 4, 2, 3456789012345678L, 10.0, new DateTime(2024, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5959), "Withdrawal" },
-                    { 5, 3, 1234567890123456L, 200.0, new DateTime(2024, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5960), "Deposit" },
-                    { 6, 3, 1234567890123456L, 50.0, new DateTime(2024, 7, 11, 10, 7, 52, 656, DateTimeKind.Utc).AddTicks(5961), "Withdrawal" }
+                    { 1, 1L, 1, 1234567890123456L, 50.0, new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5490), "Withdrawal" },
+                    { 2, 1L, 2, 1234567890123456L, 100.0, new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5491), "Deposit" },
+                    { 3, 2L, 1, 2345678901234567L, 20.0, new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5492), "Withdrawal" },
+                    { 4, 2L, 2, 2345678901234567L, 10.0, new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5493), "Withdrawal" },
+                    { 5, 3L, 1, 3456789012345678L, 200.0, new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5493), "Deposit" },
+                    { 6, 3L, 2, 3456789012345678L, 50.0, new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5494), "Withdrawal" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -183,6 +189,11 @@ namespace BankingApp.Migrations
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transactions_AtmId",
+                table: "Transactions",
+                column: "AtmId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_CardNumber",
                 table: "Transactions",
                 column: "CardNumber");
@@ -191,10 +202,10 @@ namespace BankingApp.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Atms");
+                name: "Transactions");
 
             migrationBuilder.DropTable(
-                name: "Transactions");
+                name: "Atms");
 
             migrationBuilder.DropTable(
                 name: "Cards");
