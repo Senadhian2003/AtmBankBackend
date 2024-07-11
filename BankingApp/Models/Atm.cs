@@ -1,12 +1,13 @@
-﻿    namespace BankingApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BankingApp.Models
 {
     public class Atm
     {
+        [Key]
         public int Id { get; set; }
-
         public string Location { get; set; }
-
-        public string BranchName { get; set; }
+        public string BankName { get; set; }
 
     }
 }

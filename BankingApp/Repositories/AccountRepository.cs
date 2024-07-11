@@ -1,14 +1,16 @@
 ﻿using BankingApp.Models;
 using BankingApp.Repositories.Interface;
 using BankingApp.Exceptions;
+using BankingApp.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankingApp.Repositories
 {
     public class AccountRepository : IRepository<int, Account>
     {
 
-        private readonly LibraryManagementContext _context;
-        public AccountRepositoryUser(LibraryManagementContext context)
+        private readonly AtmContext _context;
+        public AccountRepository(AtmContext context)
         {
             _context = context;
         }
@@ -33,7 +35,7 @@ namespace BankingApp.Repositories
 
         public async Task<Account> GetByKey(int key)
         {
-            var account = await _context.Accounts.FirstOrDefaultAsync(u => u.Id == key);
+            var account = await _context.Accounts.FirstOrDefaultAsync(u => u.AccountId == key);
 
             if (account != null)
             {
@@ -58,7 +60,7 @@ namespace BankingApp.Repositories
 
         public async Task<Account> Update(Account item)
         {
-            var account = await GetByKey(item.Id);
+            var account = await GetByKey(item.AccountId);
             if (account != null)
             {
                 _context.Update(item);
