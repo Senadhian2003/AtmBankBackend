@@ -1,4 +1,6 @@
-﻿namespace BankingApp.Repositories.Interface
+﻿using BankingApp.Models;
+
+namespace BankingApp.Repositories.Interface
 {
    
         public interface IRepository<K, T> where T : class
@@ -9,7 +11,7 @@
             public Task<T> Update(T item);
             public Task<T> GetByKey(K key);
             public Task<IEnumerable<T>> GetAll();
-
-        }
+       
+    }
 
 }
