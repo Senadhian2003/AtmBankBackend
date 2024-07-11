@@ -17,13 +17,13 @@ namespace BankingApp
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
-
             #region Context
             builder.Services.AddDbContext<AtmContext>(
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("defaultConnection"))
                 );
             #endregion
+
+            var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

@@ -19,7 +19,7 @@ namespace BankingApp.Models
 
         public double CurrentAmount { get; set; }
 
-       
+        public List<Transaction>? Transactions { get; set; }       
 
 
     }
