@@ -9,5 +9,7 @@ namespace BankingApp.Models
         public string Location { get; set; }
         public string BankName { get; set; }
 
+        public List<Transaction> Transactions { get; set; }
+
     }
 }

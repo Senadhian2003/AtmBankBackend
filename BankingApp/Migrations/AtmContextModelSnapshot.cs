@@ -24,11 +24,11 @@ namespace BankingApp.Migrations
 
             modelBuilder.Entity("BankingApp.Models.Account", b =>
                 {
-                    b.Property<int>("AccountId")
+                    b.Property<long>("AccountId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AccountId"), 1L, 1);
 
                     b.Property<double>("CurrentAmount")
                         .HasColumnType("float");
@@ -52,33 +52,33 @@ namespace BankingApp.Migrations
                     b.HasData(
                         new
                         {
-                            AccountId = 1,
+                            AccountId = 1L,
                             CurrentAmount = 5000.0,
-                            DateOfCreation = new DateTime(2024, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8502),
+                            DateOfCreation = new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5456),
                             Type = "Savings",
                             UserId = 1
                         },
                         new
                         {
-                            AccountId = 2,
+                            AccountId = 2L,
                             CurrentAmount = 25000.0,
-                            DateOfCreation = new DateTime(2024, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8624),
+                            DateOfCreation = new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5459),
                             Type = "Current",
                             UserId = 1
                         },
                         new
                         {
-                            AccountId = 3,
+                            AccountId = 3L,
                             CurrentAmount = 3000.0,
-                            DateOfCreation = new DateTime(2024, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8625),
+                            DateOfCreation = new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5459),
                             Type = "Savings",
                             UserId = 2
                         },
                         new
                         {
-                            AccountId = 4,
+                            AccountId = 4L,
                             CurrentAmount = 8000.0,
-                            DateOfCreation = new DateTime(2024, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8626),
+                            DateOfCreation = new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5460),
                             Type = "Current",
                             UserId = 3
                         });
@@ -127,8 +127,8 @@ namespace BankingApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CardNumber"), 1L, 1);
 
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int");
+                    b.Property<long>("AccountId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("BankName")
                         .IsRequired()
@@ -151,25 +151,25 @@ namespace BankingApp.Migrations
                         new
                         {
                             CardNumber = 1234567890123456L,
-                            AccountId = 1,
+                            AccountId = 1L,
                             BankName = "A Bank",
-                            Expiry = new DateTime(2027, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8649),
+                            Expiry = new DateTime(2027, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5470),
                             PIN = "1234"
                         },
                         new
                         {
                             CardNumber = 2345678901234567L,
-                            AccountId = 2,
+                            AccountId = 2L,
                             BankName = "B Bank",
-                            Expiry = new DateTime(2026, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8655),
+                            Expiry = new DateTime(2026, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5475),
                             PIN = "5678"
                         },
                         new
                         {
                             CardNumber = 3456789012345678L,
-                            AccountId = 3,
+                            AccountId = 3L,
                             BankName = "A Bank",
-                            Expiry = new DateTime(2027, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8656),
+                            Expiry = new DateTime(2027, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5476),
                             PIN = "9876"
                         });
                 });
@@ -182,7 +182,11 @@ namespace BankingApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AccountId")
+                    b.Property<long>("AccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int?>("AtmId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<long>("CardNumber")
@@ -202,6 +206,8 @@ namespace BankingApp.Migrations
 
                     b.HasIndex("AccountId");
 
+                    b.HasIndex("AtmId");
+
                     b.HasIndex("CardNumber");
 
                     b.ToTable("Transactions");
@@ -210,55 +216,61 @@ namespace BankingApp.Migrations
                         new
                         {
                             Id = 1,
-                            AccountId = 1,
+                            AccountId = 1L,
+                            AtmId = 1,
                             CardNumber = 1234567890123456L,
                             TransactionAmount = 50.0,
-                            TransactionDate = new DateTime(2024, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8670),
+                            TransactionDate = new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5490),
                             TransactionType = "Withdrawal"
                         },
                         new
                         {
                             Id = 2,
-                            AccountId = 1,
+                            AccountId = 1L,
+                            AtmId = 2,
                             CardNumber = 1234567890123456L,
                             TransactionAmount = 100.0,
-                            TransactionDate = new DateTime(2024, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8672),
+                            TransactionDate = new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5491),
                             TransactionType = "Deposit"
                         },
                         new
                         {
                             Id = 3,
-                            AccountId = 2,
+                            AccountId = 2L,
+                            AtmId = 1,
                             CardNumber = 2345678901234567L,
                             TransactionAmount = 20.0,
-                            TransactionDate = new DateTime(2024, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8672),
+                            TransactionDate = new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5492),
                             TransactionType = "Withdrawal"
                         },
                         new
                         {
                             Id = 4,
-                            AccountId = 2,
+                            AccountId = 2L,
+                            AtmId = 2,
                             CardNumber = 2345678901234567L,
                             TransactionAmount = 10.0,
-                            TransactionDate = new DateTime(2024, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8673),
+                            TransactionDate = new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5493),
                             TransactionType = "Withdrawal"
                         },
                         new
                         {
                             Id = 5,
-                            AccountId = 3,
+                            AccountId = 3L,
+                            AtmId = 1,
                             CardNumber = 3456789012345678L,
                             TransactionAmount = 200.0,
-                            TransactionDate = new DateTime(2024, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8674),
+                            TransactionDate = new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5493),
                             TransactionType = "Deposit"
                         },
                         new
                         {
                             Id = 6,
-                            AccountId = 3,
+                            AccountId = 3L,
+                            AtmId = 2,
                             CardNumber = 3456789012345678L,
                             TransactionAmount = 50.0,
-                            TransactionDate = new DateTime(2024, 7, 11, 10, 12, 20, 197, DateTimeKind.Utc).AddTicks(8674),
+                            TransactionDate = new DateTime(2024, 7, 11, 13, 58, 41, 670, DateTimeKind.Utc).AddTicks(5494),
                             TransactionType = "Withdrawal"
                         });
                 });
@@ -340,6 +352,11 @@ namespace BankingApp.Migrations
                         .HasForeignKey("AccountId")
                         .IsRequired();
 
+                    b.HasOne("BankingApp.Models.Atm", "Atm")
+                        .WithMany("Transactions")
+                        .HasForeignKey("AtmId")
+                        .IsRequired();
+
                     b.HasOne("BankingApp.Models.Card", "Card")
                         .WithMany("TransactionList")
                         .HasForeignKey("CardNumber")
@@ -347,10 +364,17 @@ namespace BankingApp.Migrations
 
                     b.Navigation("Account");
 
+                    b.Navigation("Atm");
+
                     b.Navigation("Card");
                 });
 
             modelBuilder.Entity("BankingApp.Models.Account", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("BankingApp.Models.Atm", b =>
                 {
                     b.Navigation("Transactions");
                 });

@@ -3,9 +3,9 @@
     public class EmptyListException : Exception
     {
         string message;
-        public EmptyListException(string element)
+        public EmptyListException(string msg)
         {
-            message = $"The {element} List is empty";
+            message = msg;
         }
 
         public override string Message => message;

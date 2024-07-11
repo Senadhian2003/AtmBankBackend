@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BankingApp.Repositories
 {
-    public class AccountRepository : IRepository<int, Account>
+    public class AccountRepository : IRepository<long, Account>
     {
 
         private readonly AtmContext _context;
@@ -21,7 +21,7 @@ namespace BankingApp.Repositories
             return item;
         }
 
-        public async Task<Account> DeleteByKey(int key)
+        public async Task<Account> DeleteByKey(long key)
         {
             var account = await GetByKey(key);
             if (account != null)
@@ -33,7 +33,7 @@ namespace BankingApp.Repositories
             throw new ElementNotFoundException("Account");
         }
 
-        public async Task<Account> GetByKey(int key)
+        public async Task<Account> GetByKey(long key)
         {
             var account = await _context.Accounts.FirstOrDefaultAsync(u => u.AccountId == key);
 

@@ -2,65 +2,107 @@
 using BankingApp.Models;
 using BankingApp.Models.DTO;
 using BankingApp.Repositories.Interface;
+using BankingApp.Services.Interface;
 
 namespace BankingApp.Services
 {
-    public class TransactionService
+    public class TransactionService : ITransactionService
     {
-        
+
         private readonly IRepository<long, Card> _cardRepository;
-        private readonly IRepository<int, Account> _accountRepository;
+        private readonly IRepository<long, Account> _accountRepository;
         private readonly IRepository<int, Transaction> _transactionRepository;
         private readonly IRepository<int, Atm> _atmRepository;
 
-        public TransactionService(IRepository<int, Atm> atmRepository, IRepository<long, Card> cardRepository, IRepository<int, Account> accountRepository, IRepository<int, Transaction> transactionRepository) {
-            
+        public TransactionService(IRepository<int, Atm> atmRepository, IRepository<long, Card> cardRepository, IRepository<long, Account> accountRepository, IRepository<int, Transaction> transactionRepository)
+        {
+
             _cardRepository = cardRepository;
             _accountRepository = accountRepository;
             _transactionRepository = transactionRepository;
             _atmRepository = atmRepository;
 
-            
         }
 
+        public async Task<string> Deposit(DepositDTO depositDto)
+        {
+            Card card = await _cardRepository.GetByKey(depositDto.CardNumber);
+            if (card == null || DateTime.Now > card.Expiry)
+            {
+                throw new InvalidCardException();
+            }
+            if (card.PIN != depositDto.Pin)
+            {
+                throw new UnauthorizedUserException("Invalid PIN");
+            }
 
-        public async Task<string> Withdraw(WithdrawDTO dto )
+            Account account = await _accountRepository.GetByKey(card.AccountId);
+            if (depositDto.Amount > 20000)
+            {
+                throw new LimitExceededException("You can only deposit Rs.20000 in a single transaction!");
+            }
+            account.CurrentAmount += depositDto.Amount;
+            await _accountRepository.Update(account);
+            return $"An amount of Rs.{depositDto.Amount} is credited to your account!";
+        }
+
+        public async Task<string> Withdraw(WithdrawDTO dto)
         {
 
             Card card = await _cardRepository.GetByKey(dto.CardNumber);
 
-            if (card != null) {
-                
-                if(card.PIN!=dto.PIN)
-                {
-                    throw new UnauthorizedUserException("Invalid card number or PIN");
-                }
-
-                Account account = await _accountRepository.GetByKey(card.AccountId);
-
-                
-
-                if(account.CurrentAmount < dto.Amount)
-                {
-                    throw new InsufficientFundsException("You have less amount in your account than withdraw request");
-                }
-
-                account.CurrentAmount-= dto.Amount;
-
-                await _accountRepository.Update(account);
-
-                return "Successful Withdraw";
-
-
-                
+            if (card == null && DateTime.Now > card.Expiry)
+            {
+                throw new InvalidCardException();
+            }
+            if (card.PIN != dto.PIN)
+            {
+                throw new UnauthorizedUserException("Invalid PIN");
             }
 
-            return "Unsuccessful";
+            Account account = await _accountRepository.GetByKey(card.AccountId);
 
+
+
+            if (account.CurrentAmount < dto.Amount)
+            {
+                throw new InsufficientFundsException("You have less amount in your account than withdraw request");
+            }
+
+            account.CurrentAmount -= dto.Amount;
+
+            await _accountRepository.Update(account);
+
+            return $"An amount of Rs.{dto.Amount} is debited from your account!";
 
         }
 
-
-
+        public async Task<List<TransactionReturnDTO>> GetAllTransactions(CardReaderDTO dataReadDto)
+        {
+            Card card = await _cardRepository.GetByKey(dataReadDto.CardNumber);
+            if (card == null || DateTime.Now > card.Expiry)
+            {
+                throw new InvalidCardException();
+            }
+            if (card.PIN != dataReadDto.Pin)
+            {
+                throw new UnauthorizedUserException("Invalid PIN");
+            }
+            var transactions = _transactionRepository.GetAll().Result.Where(t => t.CardNumber == dataReadDto.CardNumber);
+            Console.Write(transactions);
+            var transactionsList = new List<TransactionReturnDTO>();
+            foreach (var transaction in transactions)
+            {
+                if (transaction.AtmId == null)
+                {
+                    transactionsList.Append(new TransactionReturnDTO(transaction.Id, transaction.TransactionDate, transaction.TransactionType, transaction.TransactionAmount));
+                }
+                var atm = await _atmRepository.GetByKey((int)transaction.AtmId);
+                transactionsList.Append(new TransactionReturnDTO(atm.BankName, atm.Location, transaction.Id, transaction.TransactionDate, transaction.TransactionType, transaction.TransactionAmount));
+            }
+            if (transactionsList.Count > 0)
+                return transactionsList;
+            throw new EmptyListException("No Transactions are done yet!");
+        }
     }
 }
