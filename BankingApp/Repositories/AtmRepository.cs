@@ -1,14 +1,16 @@
 ﻿using BankingApp.Models;
 using BankingApp.Repositories.Interface;
 using BankingApp.Exceptions;
+using BankingApp.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankingApp.Repositories
 {
     public class AtmRepository : IRepository<int, Atm>
     {
 
-        private readonly LibraryManagementContext _context;
-        public AtmRepository(LibraryManagementContext context)
+        private readonly AtmContext _context;
+        public AtmRepository(AtmContext context)
         {
             _context = context;
         }

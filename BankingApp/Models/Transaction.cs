@@ -7,13 +7,11 @@ namespace BankingApp.Models
 
         public int Id { get; set; }
 
-        public int CardNumber { get; set; }
-        [ForeignKey(nameof(CardNumber))]
+        public long CardNumber { get; set; }
         public Card? Card { get; set; }
 
 
         public int AccountId { get; set; }
-        [ForeignKey(nameof(AccountId))]
         public Account Account { get; set; }
 
         public string TransactionType { get; set; }

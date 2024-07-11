@@ -7,7 +7,7 @@ namespace BankingApp.Models
     {
 
         [Key]
-        public int CardNumber { get; set; }
+        public long CardNumber { get; set; }
 
         public string BankName { get; set; }
 
@@ -18,6 +18,8 @@ namespace BankingApp.Models
         public string PIN { get; set; }
 
         public DateTime Expiry { get; set; }
+
+        public List<Transaction>? TransactionList { get; set; }
 
     }
 }
