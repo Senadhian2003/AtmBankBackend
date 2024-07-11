@@ -1,3 +1,7 @@
+using BankingApp.Contexts;
+using Microsoft.EntityFrameworkCore;
+using System;
+
 namespace BankingApp
 {
     public class Program
@@ -14,6 +18,12 @@ namespace BankingApp
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            #region Context
+            builder.Services.AddDbContext<AtmContext>(
+                options => options.UseSqlServer(builder.Configuration.GetConnectionString("defaultConnection"))
+                );
+            #endregion
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
