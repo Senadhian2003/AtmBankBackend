@@ -14,6 +14,8 @@ namespace BankingApp.Models.DTO
         
         public double Amount { get; set; }
 
+        public int AtmId { get; set; }
+
 
     }
 }

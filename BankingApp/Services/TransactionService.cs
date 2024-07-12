@@ -42,6 +42,7 @@ namespace BankingApp.Services
                 throw new LimitExceededException("You can only deposit Rs.20000 in a single transaction!");
             }
             account.CurrentAmount += depositDto.Amount;
+            await _transactionRepository.Add(new Transaction(depositDto.CardNumber, depositDto.AtmId, account.AccountId, "deposit", depositDto.Amount));
             await _accountRepository.Update(account);
             return $"An amount of Rs.{depositDto.Amount} is credited to your account!";
         }
@@ -69,8 +70,13 @@ namespace BankingApp.Services
                 throw new InsufficientFundsException("You have less amount in your account than withdraw request");
             }
 
-            account.CurrentAmount -= dto.Amount;
+            if (dto.Amount>10000)
+            {
+                throw new LimitExceededException("You can only withdraw Rs.10000 in a single transaction!");
+            }
 
+            account.CurrentAmount -= dto.Amount;
+            await _transactionRepository.Add(new Transaction(dto.CardNumber,dto.AtmId,account.AccountId,"withdraw",dto.Amount));
             await _accountRepository.Update(account);
 
             return $"An amount of Rs.{dto.Amount} is debited from your account!";
@@ -89,16 +95,14 @@ namespace BankingApp.Services
                 throw new UnauthorizedUserException("Invalid PIN");
             }
             var transactions = _transactionRepository.GetAll().Result.Where(t => t.CardNumber == dataReadDto.CardNumber);
-            Console.Write(transactions);
             var transactionsList = new List<TransactionReturnDTO>();
             foreach (var transaction in transactions)
             {
                 if (transaction.AtmId == null)
                 {
-                    transactionsList.Append(new TransactionReturnDTO(transaction.Id, transaction.TransactionDate, transaction.TransactionType, transaction.TransactionAmount));
+                    transactionsList.Add(new TransactionReturnDTO(transaction.Id, transaction.TransactionDate, transaction.TransactionType, transaction.TransactionAmount));
                 }
-                var atm = await _atmRepository.GetByKey((int)transaction.AtmId);
-                transactionsList.Append(new TransactionReturnDTO(atm.BankName, atm.Location, transaction.Id, transaction.TransactionDate, transaction.TransactionType, transaction.TransactionAmount));
+                transactionsList.Add(new TransactionReturnDTO(transaction.Atm.BankName, transaction.Atm.Location, transaction.Id, transaction.TransactionDate, transaction.TransactionType, transaction.TransactionAmount));
             }
             if (transactionsList.Count > 0)
                 return transactionsList;

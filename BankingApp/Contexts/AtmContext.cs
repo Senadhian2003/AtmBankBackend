@@ -60,14 +60,14 @@ namespace BankingApp.Contexts
 
             // Transactions
             modelBuilder.Entity<Transaction>().HasData(
-                new Transaction { Id = 1, CardNumber = 1234567890123456, AccountId = 1, TransactionType = "Withdrawal", TransactionAmount = 50.00, TransactionDate = DateTime.UtcNow , AtmId=1},
-                new Transaction { Id = 2, CardNumber = 1234567890123456, AccountId = 1, TransactionType = "Deposit", TransactionAmount = 100.00, TransactionDate = DateTime.UtcNow, AtmId = 2 },
+                new Transaction {Id = 1,CardNumber = 1234567890123456, AtmId = 1, AccountId = 1, TransactionType = "Withdrawal", TransactionAmount = 50.00},
+                new Transaction {Id=2,CardNumber = 1234567890123456, AtmId = 2, AccountId = 1, TransactionType = "Deposit", TransactionAmount = 100.00 },
 
-                new Transaction { Id = 3, CardNumber = 2345678901234567, AccountId = 2, TransactionType = "Withdrawal", TransactionAmount = 20.00, TransactionDate = DateTime.UtcNow , AtmId = 1 },
-                new Transaction { Id = 4, CardNumber = 2345678901234567, AccountId = 2, TransactionType = "Withdrawal", TransactionAmount = 10.00, TransactionDate = DateTime.UtcNow, AtmId = 2 },
+                new Transaction {Id=3, CardNumber = 2345678901234567, AtmId = 1, AccountId = 2, TransactionType = "Withdrawal", TransactionAmount = 20.00 },
+                new Transaction {Id=4,CardNumber = 2345678901234567, AtmId = 2, AccountId = 2, TransactionType = "Withdrawal", TransactionAmount = 10.00 },
 
-                new Transaction { Id = 5, CardNumber = 3456789012345678, AccountId = 3, TransactionType = "Deposit", TransactionAmount = 200.00, TransactionDate = DateTime.UtcNow , AtmId = 1 },
-                new Transaction { Id = 6, CardNumber = 3456789012345678, AccountId = 3, TransactionType = "Withdrawal", TransactionAmount = 50.00, TransactionDate = DateTime.UtcNow , AtmId = 2}
+                new Transaction {Id=5,CardNumber = 3456789012345678, AtmId = 1, AccountId = 3, TransactionType = "Deposit", TransactionAmount = 200.00 },
+                new Transaction {Id=6,CardNumber = 3456789012345678, AtmId = 2, AccountId = 3, TransactionType = "Withdrawal", TransactionAmount = 50.00 }
             );
 
             modelBuilder.Entity<Atm>().HasData(
