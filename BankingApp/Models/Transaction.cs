@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BankingApp.Models
 {
     public class Transaction
     {
-
+        [Key]
         public int Id { get; set; }
 
         public long CardNumber { get; set; }
@@ -18,7 +19,20 @@ namespace BankingApp.Models
 
         public double TransactionAmount { get; set; }
 
-        public DateTime TransactionDate { get; set; }
+        public DateTime TransactionDate { get; set; } = DateTime.Now;
 
+        public Transaction()
+        {
+
+        }
+
+        public Transaction(long cardNumber, int? atmId, long accountId, string transactionType, double transactionAmount)
+        {
+            CardNumber = cardNumber;
+            AtmId = atmId;
+            AccountId = accountId;
+            TransactionType = transactionType;
+            TransactionAmount = transactionAmount;
+        }
     }
 }

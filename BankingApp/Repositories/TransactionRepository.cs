@@ -35,7 +35,7 @@ namespace BankingApp.Repositories
 
         public async Task<Transaction> GetByKey(int key)
         {
-            var transaction = await _context.Transactions.FirstOrDefaultAsync(u => u.Id == key);
+            var transaction = await _context.Transactions.Include(t=>t.Atm).Include(t=>t.Account).FirstOrDefaultAsync(u => u.Id == key);
 
             if (transaction != null)
             {
@@ -47,7 +47,7 @@ namespace BankingApp.Repositories
 
         public async Task<IEnumerable<Transaction>> GetAll()
         {
-            var transactions = await _context.Transactions.ToListAsync();
+            var transactions = await _context.Transactions.Include(t => t.Atm).Include(t => t.Account).ToListAsync();
 
             if (transactions.Any())
             {
